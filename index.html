@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KANBAN - Inventory Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Auth Screen -->
+        <div id="auth-screen" class="auth-container">
+            <div class="auth-card">
+                <div class="auth-left">
+                    <div class="logo-container">
+                        <div class="kanban-logo">
+                            <svg width="60" height="60" viewBox="0 0 100 100">
+                                <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="#2f6fed" stroke="#1e3a8a" stroke-width="2"/>
+                                <path d="M35 50 L45 60 L65 35" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h1 class="app-name">KANBAN</h1>
+                        <p class="app-tagline">Inventory Management System</p>
+                    </div>
+                </div>
+                <div class="auth-right">
+                    <div id="login-form" class="auth-form active">
+                        <div class="form-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h2>Log in to your account</h2>
+                        <p class="subtitle">Welcome back! Please enter your details.</p>
+                        <form id="login-form-element">
+                            <div class="form-group">
+                                <input type="email" id="login-email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="login-password" placeholder="Enter your password" required>
+                            </div>
+                            <div class="form-options">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="remember-me"> Remember for 30 days
+                                </label>
+                                <a href="#" class="forgot-password">Forgot password?</a>
+                            </div>
+                            <button type="submit" class="btn-primary">Sign in</button>
+                        </form>
+                        <div class="divider">or</div>
+                        <button class="btn-google">
+                            <i class="fab fa-google"></i> Sign in with Google
+                        </button>
+                        <p class="bottom-text">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+                    </div>
+                    <div id="signup-form" class="auth-form">
+                        <div class="form-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h2>Create an account</h2>
+                        <p class="subtitle">Start your 30-day free trial.</p>
+                        <form id="signup-form-element">
+                            <div class="form-group">
+                                <input type="text" id="signup-name" placeholder="Full name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="signup-email" placeholder="Email address" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="signup-password" placeholder="Password" required>
+                                <small>Must be at least 8 characters</small>
+                            </div>
+                            <button type="submit" class="btn-primary">Get started</button>
+                        </form>
+                        <div class="divider">or</div>
+                        <button class="btn-google">
+                            <i class="fab fa-google"></i> Sign up with Google
+                        </button>
+                        <p class="bottom-text">Already have an account? <a href="#" id="show-login">Log in</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard-screen" style="display: none;">
+            <div class="dashboard-container">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <div class="logo-small">
+                            <svg width="32" height="32" viewBox="0 0 100 100">
+                                <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="#2f6fed" stroke="#1e3a8a" stroke-width="2"/>
+                                <path d="M35 50 L45 60 L65 35" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/>
+                            </svg>
+                            <span>KANBAN</span>
+                        </div>
+                    </div>
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-item active" data-page="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#" class="nav-item" data-page="inventory">
+                            <i class="fas fa-boxes"></i>
+                            <span>Inventory</span>
+                        </a>
+                        <a href="#" class="nav-item" data-page="reports">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Reports</span>
+                        </a>
+                        <a href="#" class="nav-item" data-page="suppliers">
+                            <i class="fas fa-truck"></i>
+                            <span>Suppliers</span>
+                        </a>
+                        <a href="#" class="nav-item" data-page="orders">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Orders</span>
+                        </a>
+                        <a href="#" class="nav-item" data-page="manage-store">
+                            <i class="fas fa-store"></i>
+                            <span>Manage Store</span>
+                        </a>
+                    </nav>
+                    <div class="sidebar-footer">
+                        <a href="#" class="nav-item" id="settings-btn">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                        <a href="#" class="nav-item" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Log Out</span>
+                        </a>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <header class="top-navbar">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search product, supplier, order...">
+                        </div>
+                        <div class="user-menu">
+                            <button class="notification-btn">
+                                <i class="fas fa-bell"></i>
+                                <span class="badge">3</span>
+                            </button>
+                            <div class="user-avatar">
+                                <img src="https://via.placeholder.com/40" alt="User">
+                                <div class="user-info">
+                                    <span id="user-name"></span>
+                                    <span id="user-role" class="role-badge"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div id="page-content">
+                        <!-- Dashboard Page -->
+                        <div id="dashboard-page" class="page active">
+                            <div class="page-header">
+                                <div>
+                                    <h1>Dashboard</h1>
+                                    <p id="dashboard-welcome">Welcome back, <span id="dashboard-user-name"></span>!</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Stats Grid -->
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-icon blue">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Sales</h3>
+                                        <p class="stat-value" id="stat-sales">₹0</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon purple">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Revenue</h3>
+                                        <p class="stat-value" id="stat-revenue">₹0</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon green">
+                                        <i class="fas fa-chart-simple"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Profit</h3>
+                                        <p class="stat-value" id="stat-profit">₹0</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon orange">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Cost</h3>
+                                        <p class="stat-value" id="stat-cost">₹0</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Stats -->
+                            <div class="quick-stats-grid">
+                                <div class="quick-stat-card">
+                                    <h4>Quantity in Hand</h4>
+                                    <p class="large-number" id="quantity-hand">0</p>
+                                </div>
+                                <div class="quick-stat-card">
+                                    <h4>To be Received</h4>
+                                    <p class="large-number" id="to-received">0</p>
+                                </div>
+                                <div class="quick-stat-card">
+                                    <h4>Number of Suppliers</h4>
+                                    <p class="large-number" id="suppliers-count">0</p>
+                                </div>
+                                <div class="quick-stat-card">
+                                    <h4>Categories</h4>
+                                    <p class="large-number" id="categories-count">0</p>
+                                </div>
+                            </div>
+
+                            <!-- Top Selling Products -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <h3>Top Selling Stock</h3>
+                                    <a href="#" class="see-all">See All</a>
+                                </div>
+                                <div class="table-container">
+                                    <table id="top-products-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Sold Quantity</th>
+                                                <th>Remaining Quantity</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="top-products-body">
+                                            <tr><td colspan="4">Loading...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Low Quantity Stock -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <h3>Low Quantity Stock</h3>
+                                    <a href="#" class="see-all">See All</a>
+                                </div>
+                                <div id="low-stock-list">
+                                    <p>Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inventory Page -->
+                        <div id="inventory-page" class="page">
+                            <div class="page-header">
+                                <h1>Inventory Management</h1>
+                                <button class="btn-primary" id="add-product-btn">
+                                    <i class="fas fa-plus"></i> Add Product
+                                </button>
+                            </div>
+                            <div class="table-container">
+                                <table id="inventory-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>SKU</th>
+                                            <th>Category</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inventory-body">
+                                        <tr><td colspan="7">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Add Product Modal -->
+                        <div id="product-modal" class="modal">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>Add New Product</h3>
+                                    <span class="close">&times;</span>
+                                </div>
+                                <form id="product-form">
+                                    <div class="form-group">
+                                        <label>Product Name</label>
+                                        <input type="text" id="product-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>SKU</label>
+                                        <input type="text" id="product-sku" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select id="product-category" required></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Supplier</label>
+                                        <select id="product-supplier" required></select>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Quantity</label>
+                                            <input type="number" id="product-quantity" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Price (₹)</label>
+                                            <input type="number" step="0.01" id="product-price" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Cost (₹)</label>
+                                            <input type="number" step="0.01" id="product-cost" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Reorder Level</label>
+                                        <input type="number" id="product-reorder" value="10">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea id="product-description" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn-primary">Create Product</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -5,13 +5,12 @@ class Transaction(db.Model):
     __tablename__ = 'transactions'
     
     id = db.Column(db.Integer, primary_key=True)
-    transaction_type = db.Column(db.String(20), nullable=False)  # 'in' or 'out'
+    transaction_type = db.Column(db.String(20), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     reference = db.Column(db.String(100))
     notes = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Foreign Keys
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     

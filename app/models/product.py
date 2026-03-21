@@ -15,11 +15,9 @@ class Product(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Foreign Keys
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id'))
     
-    # Relationships
     transactions = db.relationship('Transaction', backref='product', lazy=True)
     
     def to_dict(self):

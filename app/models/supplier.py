@@ -12,7 +12,6 @@ class Supplier(db.Model):
     address = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relationships
     products = db.relationship('Product', backref='supplier', lazy=True)
     
     def to_dict(self):
