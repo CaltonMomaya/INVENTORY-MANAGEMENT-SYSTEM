@@ -1,0 +1,46 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
+from flask_cors import CORS
+from datetime import timedelta
+
+# Initialize extensions
+db = SQLAlchemy()
+jwt = JWTManager()
+bcrypt = Bcrypt()
+
+def create_app(config_name='development'):
+    app = Flask(__name__)
+    
+    # Load configuration
+    if config_name == 'development':
+        app.config.from_object('app.config.DevelopmentConfig')
+    else:
+        app.config.from_object('app.config.ProductionConfig')
+    
+    # Initialize extensions
+    db.init_app(app)
+    jwt.init_app(app)
+    bcrypt.init_app(app)
+    CORS(app)
+    
+    # Register blueprints
+    from app.routes import auth, products, categories, suppliers, transactions
+    
+    app.register_blueprint(auth.bp, url_prefix='/api/auth')
+    app.register_blueprint(products.bp, url_prefix='/api/products')
+    app.register_blueprint(categories.bp, url_prefix='/api/categories')
+    app.register_blueprint(suppliers.bp, url_prefix='/api/suppliers')
+    app.register_blueprint(transactions.bp, url_prefix='/api/transactions')
+    
+    # Error handlers
+    @app.errorhandler(404)
+    def not_found(error):
+        return {'error': 'Resource not found'}, 404
+    
+    @app.errorhandler(500)
+    def internal_error(error):
+        return {'error': 'Internal server error'}, 500
+    
+    return app
