@@ -42,7 +42,7 @@ async function checkAuth() {
         currentToken = token;
         await loadCurrentUser();
         showDashboard();
-        loadDashboard();
+        loadCompleteDashboard();
     } else {
         showAuth();
     }
@@ -144,7 +144,7 @@ async function handleLogin(e) {
             
             showDashboard();
             updateUIForRole();
-            loadDashboard();
+            loadCompleteDashboard();
         } else {
             alert(data.error || 'Login failed');
         }
@@ -302,7 +302,7 @@ function navigateTo(page) {
     
     // Load page data
     if (page === 'dashboard') {
-        loadDashboard();
+        loadCompleteDashboard();
     } else if (page === 'inventory') {
         loadInventory();
     }
@@ -361,7 +361,7 @@ function showSettings() {
 }
 
 // Load Dashboard Data
-async function loadDashboard() {
+async function loadCompleteDashboard() {
     try {
         const response = await fetch(`${API_URL}/transactions/dashboard`, {
             headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -461,7 +461,7 @@ async function loadLowStockProducts() {
 }
 
 // Load Inventory
-async function loadInventory() {
+async function old_loadInventory() {
     try {
         const response = await fetch(`${API_URL}/products`, {
             headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -586,7 +586,7 @@ async function handleCreateProduct(e) {
             alert('Product created successfully!');
             closeProductModal();
             loadInventory();
-            loadDashboard();
+            loadCompleteDashboard();
         } else {
             alert(data.error || 'Failed to create product');
         }
@@ -627,7 +627,7 @@ window.addStock = async function(productId) {
         if (response.ok) {
             alert('Stock added successfully!');
             loadInventory();
-            loadDashboard();
+            loadCompleteDashboard();
         } else {
             alert(data.error || 'Failed to add stock');
         }
@@ -668,12 +668,330 @@ window.removeStock = async function(productId) {
         if (response.ok) {
             alert('Stock removed successfully!');
             loadInventory();
-            loadDashboard();
+            loadCompleteDashboard();
         } else {
             alert(data.error || 'Failed to remove stock');
         }
     } catch (error) {
         console.error('Error removing stock:', error);
         alert('Connection error');
+    }
+};
+
+// Dark Mode Functions
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+}
+
+function initTheme() {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+}
+
+// Initialize theme on load
+initTheme();
+
+// Sell Product Function
+window.sellProduct = async function(productId) {
+    const quantity = prompt('Enter quantity to sell:');
+    if (!quantity || quantity <= 0) return;
+    
+    const userRole = localStorage.getItem('userRole');
+    if (userRole !== 'admin' && userRole !== 'manager') {
+        alert('Only managers and admins can process sales');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/transactions/out`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: parseInt(quantity),
+                reference: `SALE-${Date.now()}`,
+                notes: 'Product sold to customer'
+            })
+        });
+        
+        if (response.ok) {
+            alert(`✅ Sold ${quantity} units successfully!`);
+            loadInventory(); // Refresh inventory
+            loadDashboard(); // Refresh dashboard
+        } else {
+            const data = await response.json();
+            alert(data.error || 'Failed to process sale');
+        }
+    } catch (error) {
+        console.error('Error selling product:', error);
+        alert('Connection error');
+    }
+};
+
+// Pagination variables
+let currentPage = 1;
+let totalPages = 1;
+
+async function loadInventoryWithPagination(page = 1) {
+    currentPage = page;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/products?page=${page}&per_page=10`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const products = data.products || [];
+        totalPages = data.pagination?.pages || 1;
+        
+        // Render inventory table
+        const tbody = document.getElementById('inventory-body');
+        const userRole = localStorage.getItem('userRole');
+        const isAdmin = userRole === 'admin' || userRole === 'manager';
+        
+        tbody.innerHTML = products.map(p => `
+            <tr>
+                <td>${p.name}</td>
+                <td>${p.sku}</td>
+                <td>${p.category_name || '-'}</td>
+                <td>${p.quantity}</td>
+                <td>₹${p.price}</td>
+                <td><span class="status-badge ${p.is_low_stock ? 'status-low' : 'status-normal'}">${p.is_low_stock ? 'Low Stock' : 'In Stock'}</span></td>
+                <td>${isAdmin ? `
+                    <button class="btn-icon" onclick="addStock(${p.id})" title="Add Stock"><i class="fas fa-plus-circle"></i></button>
+                    <button class="btn-icon" onclick="sellProduct(${p.id})" title="Sell"><i class="fas fa-shopping-cart"></i></button>
+                ` : 'View Only'}</td>
+            </tr>
+        `).join('');
+        
+        // Render pagination
+        renderPagination();
+        
+    } catch(e) {
+        console.error('Error loading inventory:', e);
+    }
+}
+
+function renderPagination() {
+    const container = document.getElementById('pagination-controls');
+    if (!container || totalPages <= 1) {
+        if (container) container.innerHTML = '';
+        return;
+    }
+    
+    let html = '<div class="pagination">';
+    if (currentPage > 1) {
+        html += `<button onclick="loadInventoryWithPagination(${currentPage - 1})">← Prev</button>`;
+    }
+    
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            html += `<button class="active" disabled>${i}</button>`;
+        } else if (Math.abs(i - currentPage) <= 2 || i === 1 || i === totalPages) {
+            html += `<button onclick="loadInventoryWithPagination(${i})">${i}</button>`;
+        } else if (Math.abs(i - currentPage) === 3) {
+            html += `<span>...</span>`;
+        }
+    }
+    
+    if (currentPage < totalPages) {
+        html += `<button onclick="loadInventoryWithPagination(${currentPage + 1})">Next →</button>`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Replace loadInventory with paginated version
+window.loadInventory = loadInventoryWithPagination;
+
+// User Management Functions
+async function loadUsers() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/auth/users`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        const users = data.users || [];
+        
+        const container = document.getElementById('users-list');
+        if (!container) return;
+        
+        if (users.length === 0) {
+            container.innerHTML = '<p>No users found</p>';
+            return;
+        }
+        
+        let html = '<table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+        users.forEach(user => {
+            html += `<tr>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td><span class="role-badge role-${user.role}">${user.role}</span></td>
+                <td>${user.is_active ? '<span style="color:#10b981;">Active</span>' : '<span style="color:#ef4444;">Inactive</span>'}</td>
+                <td>
+                    <button onclick="toggleUserStatus(${user.id})" class="btn-icon"><i class="fas ${user.is_active ? 'fa-ban' : 'fa-check-circle'}"></i></button>
+                    <button onclick="deleteUser(${user.id})" class="btn-icon"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    } catch(e) {
+        console.error('Error loading users:', e);
+    }
+}
+
+async function toggleUserStatus(userId) {
+    if (!confirm('Change user status?')) return;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/auth/users/${userId}/toggle`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+            alert('User status updated!');
+            loadUsers();
+        }
+    } catch(e) { console.error(e); }
+}
+
+async function deleteUser(userId) {
+    if (!confirm('Delete user permanently?')) return;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/auth/users/${userId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+            alert('User deleted!');
+            loadUsers();
+        }
+    } catch(e) { console.error(e); }
+}
+
+// Fix Add Product Modal
+document.getElementById('add-product-btn')?.addEventListener('click', async () => {
+    // Load categories and suppliers
+    try {
+        const token = localStorage.getItem('token');
+        const [catRes, supRes] = await Promise.all([
+            fetch(`${API_URL}/categories`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_URL}/suppliers`, { headers: { 'Authorization': `Bearer ${token}` } })
+        ]);
+        const categories = await catRes.json();
+        const suppliers = await supRes.json();
+        
+        const categorySelect = document.getElementById('product-category');
+        categorySelect.innerHTML = '<option value="">Select Category</option>' + 
+            categories.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        
+        const supplierSelect = document.getElementById('product-supplier');
+        supplierSelect.innerHTML = '<option value="">Select Supplier</option>' + 
+            suppliers.suppliers.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        
+        document.getElementById('product-modal').style.display = 'block';
+    } catch(e) { console.error(e); }
+});
+
+document.querySelector('.close')?.addEventListener('click', () => {
+    document.getElementById('product-modal').style.display = 'none';
+});
+
+document.getElementById('product-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const productData = {
+        name: document.getElementById('product-name').value,
+        sku: document.getElementById('product-sku').value,
+        category_id: parseInt(document.getElementById('product-category').value),
+        supplier_id: parseInt(document.getElementById('product-supplier').value),
+        quantity: parseInt(document.getElementById('product-quantity').value),
+        price: parseFloat(document.getElementById('product-price').value),
+        cost: parseFloat(document.getElementById('product-cost').value),
+        reorder_level: 10
+    };
+    
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/products`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+        });
+        
+        if (response.ok) {
+            alert('Product created!');
+            document.getElementById('product-modal').style.display = 'none';
+            loadInventoryWithPagination();
+        } else {
+            alert('Failed to create product');
+        }
+    } catch(e) { console.error(e); }
+});
+
+// Hide Suppliers menu for non-admin users
+function updateMenuBasedOnRole() {
+    const userRole = localStorage.getItem('userRole');
+    const suppliersMenuItem = document.querySelector('.nav-item[data-page="suppliers"]');
+    const userManagementMenuItem = document.querySelector('.nav-item[data-page="users"]');
+    
+    if (suppliersMenuItem) {
+        if (userRole !== 'admin') {
+            suppliersMenuItem.style.display = 'none';
+        } else {
+            suppliersMenuItem.style.display = 'flex';
+        }
+    }
+    
+    if (userManagementMenuItem) {
+        if (userRole !== 'admin') {
+            userManagementMenuItem.style.display = 'none';
+        } else {
+            userManagementMenuItem.style.display = 'flex';
+        }
+    }
+}
+
+// Call after login
+const originalSetItem = localStorage.setItem;
+localStorage.setItem = function(key, value) {
+    originalSetItem.apply(this, arguments);
+    if (key === 'userRole') {
+        updateMenuBasedOnRole();
+    }
+};
+
+// Call on page load
+if (localStorage.getItem('userRole')) {
+    updateMenuBasedOnRole();
+}
+
+// Override logout to clear session timer
+const originalLogout = window.handleLogout;
+window.handleLogout = function(e) {
+    if (e) e.preventDefault();
+    // Clear session timeout
+    if (window.inactivityTimer) {
+        clearTimeout(window.inactivityTimer);
+    }
+    if (window.countdownInterval) {
+        clearInterval(window.countdownInterval);
+    }
+    // Call original logout
+    if (originalLogout) {
+        originalLogout(e);
+    } else {
+        localStorage.clear();
+        window.location.href = '/';
     }
 };

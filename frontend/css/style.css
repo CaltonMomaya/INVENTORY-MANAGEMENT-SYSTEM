@@ -708,3 +708,338 @@ th {
     align-items: center;
     justify-content: center;
 }
+
+/* Two Column Layout */
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Stats Row */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+/* Inventory Summary */
+.inventory-stats, .purchase-stats, .product-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.inventory-stats div, .purchase-stats div, .product-stats div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.inventory-stats div span, .purchase-stats div span, .product-stats div span {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.inventory-stats div strong, .purchase-stats div strong, .product-stats div strong {
+    font-size: 20px;
+    color: #2f6fed;
+}
+
+/* Chart Cards */
+.chart-card canvas {
+    max-height: 250px;
+    width: 100%;
+}
+
+/* Filter Bar */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    align-items: center;
+}
+
+.filter-input, .filter-select {
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    min-width: 120px;
+}
+
+.btn-secondary {
+    padding: 8px 16px;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.pagination button {
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background: #2f6fed;
+    color: white;
+    border-color: #2f6fed;
+}
+
+.pagination button:hover:not(.active) {
+    background: #f3f4f6;
+}
+
+@media (max-width: 1024px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* Reports Page Styles */
+.report-filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.report-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+.tab-btn.active {
+    background: #2f6fed;
+    color: white;
+}
+
+.alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.alert-item {
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert-item.warning {
+    background: #fef3c7;
+    color: #d97706;
+    border-left: 4px solid #f59e0b;
+}
+
+.alert-item.danger {
+    background: #fee2e2;
+    color: #dc2626;
+    border-left: 4px solid #ef4444;
+}
+
+.alert-item.success {
+    background: #d1fae5;
+    color: #10b981;
+    border-left: 4px solid #10b981;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-success {
+    background: #d1fae5;
+    color: #10b981;
+}
+
+.badge-info {
+    background: #dbeafe;
+    color: #2f6fed;
+}
+
+.transaction-filters {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Reports Page Styles */
+.report-filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.report-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+.tab-btn.active {
+    background: #2f6fed;
+    color: white;
+}
+
+.alert-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert-item.warning {
+    background: #fef3c7;
+    color: #d97706;
+    border-left: 4px solid #f59e0b;
+}
+
+.alert-item.success {
+    background: #d1fae5;
+    color: #10b981;
+    border-left: 4px solid #10b981;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-success {
+    background: #d1fae5;
+    color: #10b981;
+}
+
+.badge-info {
+    background: #dbeafe;
+    color: #2f6fed;
+}
+
+.transaction-filters {
+    margin-bottom: 20px;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background: #1a1a2e;
+    color: #eee;
+}
+body.dark-mode .sidebar,
+body.dark-mode .top-navbar,
+body.dark-mode .stat-card,
+body.dark-mode .section-card,
+body.dark-mode .filter-bar,
+body.dark-mode .modal-content {
+    background: #16213e !important;
+    color: #eee;
+}
+body.dark-mode .filter-input,
+body.dark-mode .filter-select {
+    background: #0f3460;
+    color: #eee;
+    border-color: #1a4a7a;
+}
+body.dark-mode .search-bar {
+    background: #0f3460;
+}
+body.dark-mode .nav-item:hover {
+    background: #0f3460;
+}
+body.dark-mode table th {
+    background: #0f3460;
+}
+body.dark-mode .stat-card .stat-value {
+    color: #4fc3f7;
+}

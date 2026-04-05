@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Inventory Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f6f8; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #2f6fed; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filters input, .filters select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 8px 16px; background: #2f6fed; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        table { width: 100%; background: white; border-collapse: collapse; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f0f0f0; }
+        .pagination { display: flex; gap: 8px; justify-content: center; margin-top: 20px; }
+        .status-low { color: #ef4444; font-weight: bold; }
+        .status-normal { color: #10b981; }
+        .btn-icon { background: none; border: none; cursor: pointer; font-size: 18px; margin: 0 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Inventory Management Test</h1>
+            <p>Testing pagination and filters - This page is independent from your main app</p>
+        </div>
+        
+        <div class="filters">
+            <input type="text" id="search" placeholder="Search products..." style="width: 200px;">
+            <select id="category"><option value="">All Categories</option></select>
+            <select id="supplier"><option value="">All Suppliers</option></select>
+            <select id="stock"><option value="">All Stock</option><option value="low">Low Stock Only</option></select>
+            <button onclick="applyFilters()">Apply Filters</button>
+            <button onclick="resetFilters()">Reset</button>
+            <button onclick="refreshInventory()">Refresh</button>
+        </div>
+        
+        <div id="loading" style="text-align: center; padding: 40px;">Loading products...</div>
+        
+        <div id="table-container" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="products-body"></tbody>
+            </table>
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let token = localStorage.getItem('token');
+        let currentPage = 1;
+        let totalPages = 1;
+        
+        if (!token) {
+            document.body.innerHTML = '<div class="container"><div class="header" style="background:#ef4444;"><h1>❌ Not Logged In</h1><p>Please go to <a href="http://localhost:8000">http://localhost:8000</a> and login first.</p></div></div>';
+        }
+        
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API_URL}/categories`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                const select = document.getElementById('category');
+                if (data.categories) {
+                    select.innerHTML = '<option value="">All Categories</option>';
+                    data.categories.forEach(cat => {
+                        select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                    });
+                }
+            } catch(e) { console.error('Error loading categories:', e); }
+        }
+        
+        async function loadSuppliers() {
+            try {
+                const res = await fetch(`${API_URL}/suppliers`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                const select = document.getElementById('supplier');
+                if (data.suppliers) {
+                    select.innerHTML = '<option value="">All Suppliers</option>';
+                    data.suppliers.forEach(sup => {
+                        select.innerHTML += `<option value="${sup.id}">${sup.name}</option>`;
+                    });
+                }
+            } catch(e) { console.error('Error loading suppliers:', e); }
+        }
+        
+        async function loadProducts() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('table-container').style.display = 'none';
+            
+            const search = document.getElementById('search').value;
+            const category = document.getElementById('category').value;
+            const supplier = document.getElementById('supplier').value;
+            const stock = document.getElementById('stock').value;
+            
+            let url = `${API_URL}/products?page=${currentPage}&per_page=10`;
+            if (search) url += `&search=${encodeURIComponent(search)}`;
+            if (category) url += `&category_id=${category}`;
+            if (supplier) url += `&supplier_id=${supplier}`;
+            if (stock === 'low') url += `&low_stock=true`;
+            
+            try {
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                const products = data.products || [];
+                totalPages = data.pagination?.pages || 1;
+                
+                renderProducts(products);
+                renderPagination();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('table-container').style.display = 'block';
+            } catch(e) {
+                console.error('Error:', e);
+                document.getElementById('loading').innerHTML = 'Error loading products. Make sure backend is running.';
+            }
+        }
+        
+        function renderProducts(products) {
+            const tbody = document.getElementById('products-body');
+            if (!products.length) {
+                tbody.innerHTML = '<tr><td colspan="7">No products found</dress';
+                return;
+            }
+            
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td>${p.sku}</td>
+                    <td>${p.category_name || '-'}</td>
+                    <td>${p.quantity}</td>
+                    <td>₹${p.price}</td>
+                    <td class="${p.is_low_stock ? 'status-low' : 'status-normal'}">${p.is_low_stock ? '⚠️ Low Stock' : '✓ In Stock'}</td>
+                    <td>
+                        <button class="btn-icon" onclick="sellProduct(${p.id})" title="Sell">💰</button>
+                        <button class="btn-icon" onclick="addStock(${p.id})" title="Add Stock">➕</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})">← Prev</button>`;
+            }
+            html += `<span style="padding: 8px;">Page ${currentPage} of ${totalPages}</span>`;
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})">Next →</button>`;
+            }
+            container.innerHTML = html;
+        }
+        
+        function goToPage(page) {
+            currentPage = page;
+            loadProducts();
+        }
+        
+        function applyFilters() {
+            currentPage = 1;
+            loadProducts();
+        }
+        
+        function resetFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('supplier').value = '';
+            document.getElementById('stock').value = '';
+            currentPage = 1;
+            loadProducts();
+        }
+        
+        function refreshInventory() {
+            loadProducts();
+        }
+        
+        async function sellProduct(productId) {
+            const qty = prompt('Quantity to sell:', '1');
+            if (!qty) return;
+            try {
+                const res = await fetch(`${API_URL}/transactions/out`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: parseInt(qty),
+                        reference: `SALE-${Date.now()}`
+                    })
+                });
+                if (res.ok) {
+                    alert(`✅ Sold ${qty} units!`);
+                    loadProducts();
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Sale failed');
+                }
+            } catch(e) { alert('Error: ' + e.message); }
+        }
+        
+        async function addStock(productId) {
+            const qty = prompt('Quantity to add:', '1');
+            if (!qty) return;
+            try {
+                const res = await fetch(`${API_URL}/transactions/in`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: parseInt(qty),
+                        reference: `PO-${Date.now()}`
+                    })
+                });
+                if (res.ok) {
+                    alert(` Added ${qty} units!`);
+                    loadProducts();
+                } else {
+                    alert('Failed to add stock');
+                }
+            } catch(e) { alert('Error: ' + e.message); }
+        }
+        
+        // Initialize
+        loadCategories();
+        loadSuppliers();
+        loadProducts();
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from datetime import timedelta
@@ -33,32 +33,7 @@ def create_app(config_name='development'):
     bcrypt.init_app(app)
     CORS(app)
     
-    # Optional: Swagger documentation (uncomment if flasgger is installed)
-    # try:
-    #     from flasgger import Swagger
-    #     swagger = Swagger(app, template={
-    #         'swagger': '2.0',
-    #         'info': {
-    #             'title': 'KANBAN Inventory Management API',
-    #             'description': 'RESTful API for inventory management',
-    #             'version': '1.0.0'
-    #         },
-    #         'host': 'localhost:5000',
-    #         'basePath': '/api',
-    #         'schemes': ['http'],
-    #         'securityDefinitions': {
-    #             'BearerAuth': {
-    #                 'type': 'apiKey',
-    #                 'name': 'Authorization',
-    #                 'in': 'header',
-    #                 'description': 'JWT Authorization header using the Bearer scheme'
-    #             }
-    #         }
-    #     })
-    # except ImportError:
-    #     print("Flasgger not installed. Skipping Swagger documentation.")
-    
-    # JWT callbacks
+    # JWT Callbacks
     @jwt.user_identity_loader
     def user_identity_lookup(user):
         return str(user)
@@ -69,14 +44,22 @@ def create_app(config_name='development'):
         from app.models.user import User
         return User.query.get(int(identity))
     
-    # Register blueprints
-    from app.routes import auth, products, categories, suppliers, transactions
+    # Register blueprints - using your actual file names
+    from app.routes.auth import bp as auth_bp
+    from app.routes.products import bp as products_bp
+    from app.routes.categories import bp as categories_bp
+    from app.routes.suppliers import bp as suppliers_bp
+    from app.routes.transactions import bp as transactions_bp
+    from app.routes.reports_routes import bp as reports_bp
+    from app.routes.user_routes import bp as user_bp
     
-    app.register_blueprint(auth.bp, url_prefix='/api/auth')
-    app.register_blueprint(products.bp, url_prefix='/api/products')
-    app.register_blueprint(categories.bp, url_prefix='/api/categories')
-    app.register_blueprint(suppliers.bp, url_prefix='/api/suppliers')
-    app.register_blueprint(transactions.bp, url_prefix='/api/transactions')
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(products_bp, url_prefix='/api/products')
+    app.register_blueprint(categories_bp, url_prefix='/api/categories')
+    app.register_blueprint(suppliers_bp, url_prefix='/api/suppliers')
+    app.register_blueprint(transactions_bp, url_prefix='/api/transactions')
+    app.register_blueprint(reports_bp, url_prefix='/api/reports')
+    app.register_blueprint(user_bp, url_prefix='/api/auth')  # User routes under /api/auth
     
     # Root endpoint
     @app.route('/', methods=['GET'])
@@ -90,12 +73,19 @@ def create_app(config_name='development'):
                     'register': 'POST /api/auth/register',
                     'login': 'POST /api/auth/login',
                     'refresh': 'POST /api/auth/refresh',
-                    'me': 'GET /api/auth/me'
+                    'me': 'GET /api/auth/me',
+                    'users': 'GET /api/auth/users'
                 },
                 'products': 'GET /api/products',
                 'categories': 'GET /api/categories',
                 'suppliers': 'GET /api/suppliers',
-                'transactions': 'GET /api/transactions'
+                'transactions': 'GET /api/transactions',
+                'reports': {
+                    'sales': 'GET /api/reports/sales',
+                    'inventory': 'GET /api/reports/inventory',
+                    'transactions': 'GET /api/reports/transactions',
+                    'trends': 'GET /api/reports/trends'
+                }
             }
         }), 200
     
