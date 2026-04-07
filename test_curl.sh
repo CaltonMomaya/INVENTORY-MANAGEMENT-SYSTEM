@@ -8,9 +8,9 @@ NC='\033[0m'
 
 BASE_URL="http://localhost:5000"
 
-echo -e "${BLUE}========================================${NC}"
+echo -e "${BLUE}${NC}"
 echo -e "${BLUE}   Inventory Management System Test${NC}"
-echo -e "${BLUE}========================================${NC}"
+echo -e "${BLUE}${NC}"
 
 # Login
 echo -e "\n${YELLOW}1. Logging in...${NC}"
@@ -111,6 +111,6 @@ else
     echo -e "${RED}✗ Failed: $RESPONSE${NC}\n"
 fi
 
-echo -e "${BLUE}========================================${NC}"
-echo -e "${GREEN}All tests completed! 🚀${NC}"
-echo -e "${BLUE}========================================${NC}"
+echo -e "${BLUE}${NC}"
+echo -e "${GREEN}All tests completed! ${NC}"
+echo -e "${BLUE}${NC}"

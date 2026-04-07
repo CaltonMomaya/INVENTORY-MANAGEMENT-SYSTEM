@@ -84,7 +84,7 @@ This inventory management system helps businesses track products, manage stock l
 Before you begin, ensure you have the following installed:
 
 ### Required Software
-```bash
+
 # Python 3.8 or higher
 python3 --version
 
@@ -111,7 +111,7 @@ cd INVENTORY-MANAGEMENT-SYSTEM
 Step 2: Create Virtual Environment
 A virtual environment isolates project dependencies from your system Python.
 
-bash
+
 # Create virtual environment
 python3 -m venv venv
 
@@ -151,8 +151,7 @@ flask-marshmallow==1.0.0
 Step 4: Configure Environment Variables
 Create a .env file in the root directory:
 
-bash
-cat > .env << 'EOF'
+
 FLASK_APP=run.py
 FLASK_ENV=development
 SECRET_KEY=your-secret-key-here-change-in-production
@@ -161,7 +160,7 @@ DATABASE_URL=sqlite:///database.db
 EOF
 For production, generate secure random keys:
 
-bash
+
 python3 -c "import secrets; print(secrets.token_hex(32))"
 Step 5: Initialize the Database
 bash
@@ -180,7 +179,7 @@ Creates sample suppliers
 Adds sample products
 
 Step 6: Verify Database Creation
-bash
+
 # Check if database file was created
 ls -la instance/
 
@@ -219,7 +218,7 @@ Business logic
 Terminal 2 - Frontend Server
 Open a new terminal window:
 
-bash
+
 # Navigate to frontend directory
 cd ~/INVENTORY-MANAGEMENT-SYSTEM/frontend
 
@@ -748,7 +747,7 @@ text
 ModuleNotFoundError: No module named 'flask'
 Solution:
 
-bash
+
 # Activate virtual environment
 source venv/bin/activate
 
@@ -767,7 +766,7 @@ text
 OSError: [Errno 98] Address already in use
 Solution:
 
-bash
+
 # Find process using port 5000
 lsof -i :5000
 
@@ -807,7 +806,7 @@ Development Guide
 Adding a New Feature
 Create a new branch:
 
-bash
+
 git checkout -b feature/your-feature-name
 Add database model if needed:
 
@@ -836,7 +835,7 @@ def get_data():
 Update frontend to consume new API
 
 Running Tests
-bash
+
 # Run all tests
 python -m pytest tests/
 
@@ -845,7 +844,7 @@ python -m pytest tests/test_products.py
 Database Migrations
 For production, use Alembic for migrations:
 
-bash
+
 # Install Alembic
 pip install alembic
 
