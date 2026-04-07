@@ -9,22 +9,22 @@
 .schema transactions
 
 -- Show data
-SELECT '========== USERS ==========' as '';
+SELECT ' USERS ' as '';
 SELECT id, name, email, role, is_active FROM users;
 
-SELECT '========== PRODUCTS ==========' as '';
+SELECT 'PRODUCTS ' as '';
 SELECT id, name, sku, quantity, price, reorder_level FROM products;
 
-SELECT '========== CATEGORIES ==========' as '';
+SELECT ' CATEGORIES ' as '';
 SELECT * FROM categories;
 
-SELECT '========== SUPPLIERS ==========' as '';
+SELECT ' SUPPLIERS ' as '';
 SELECT * FROM suppliers;
 
-SELECT '========== TRANSACTIONS (last 5) ==========' as '';
+SELECT 'TRANSACTIONS (last 5) ' as '';
 SELECT id, transaction_type, quantity, product_id, user_id, created_at FROM transactions ORDER BY created_at DESC LIMIT 5;
 
-SELECT '========== STATISTICS ==========' as '';
+SELECT 'STATISTICS ' as '';
 SELECT 
     (SELECT COUNT(*) FROM users) as total_users,
     (SELECT COUNT(*) FROM products) as total_products,
