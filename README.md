@@ -554,7 +554,5 @@ Font Awesome for icons
 Moringa School for guidance
 
 Built with passion for inventory management
-EOF
 
-echo "README.md has been completely rewritten with proper formatting!"
 
