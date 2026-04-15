@@ -167,13 +167,13 @@ Step 4: Configure Environment Variables
 Create a .env file in the root directory:
 
 bash
-cat > .env << 'EOF'
+
 FLASK_APP=run.py
 FLASK_ENV=development
 SECRET_KEY=your-secret-key-here-change-in-production
 JWT_SECRET_KEY=jwt-secret-key-here-change-in-production
 DATABASE_URL=sqlite:///database.db
-EOF
+
 For production, generate secure random keys:
 
 bash
