@@ -1,7 +1,21 @@
-
+cat > README.md << 'EOF'
 # INVENTORY MANAGEMENT SYSTEM - KANBAN
 
 A comprehensive, production-ready inventory management system with Flask REST API backend and modern web frontend. This system provides complete inventory control with user authentication, role-based access control, real-time stock tracking, and detailed analytics.
+
+## Screenshots
+
+| Login Page | Dashboard |
+|------------|-----------|
+| ![Login Page](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) |
+
+| Inventory | Reports |
+|-----------|---------|
+| ![Inventory](screenshots/inventory.png) | ![Reports](screenshots/reports.png) |
+
+| User Management | Dark Mode |
+|----------------|-----------|
+| ![User Management](screenshots/users.png) | ![Dark Mode](screenshots/darkmode.png) |
 
 ## Table of Contents
 
@@ -58,6 +72,7 @@ This inventory management system helps businesses track products, manage stock l
 ## Technology Stack
 
 ### Backend
+
 | Technology | Version | Purpose |
 |------------|---------|---------|
 | Python | 3.8+ | Programming language |
@@ -70,6 +85,7 @@ This inventory management system helps businesses track products, manage stock l
 | Marshmallow | 3.20.1 | Data serialization |
 
 ### Frontend
+
 | Technology | Purpose |
 |------------|---------|
 | HTML5 | Structure |
@@ -83,35 +99,36 @@ This inventory management system helps businesses track products, manage stock l
 
 Before you begin, ensure you have the following installed:
 
-### Required Software
-
-# Python 3.8 or higher
+```bash
+# Check Python version (3.8 or higher required)
 python3 --version
 
-# pip package manager
+# Check pip package manager
 pip3 --version
 
-# Git (for cloning repository)
+# Check Git installation
 git --version
 
-# SQLite (for database access)
+# Check SQLite (for database access)
 sqlite3 --version
 
-
-
-
-installation Guide
+For Ubuntu/Debian Users
+bash
+sudo apt update
+sudo apt install python3 python3-pip python3-venv git sqlite3 -y
+For macOS Users
+bash
+brew install python3 git sqlite3
+Installation Guide
 Step 1: Clone the Repository
 bash
-# Clone the project
+# Clone the project from GitHub
 git clone https://github.com/CaltonMomaya/INVENTORY-MANAGEMENT-SYSTEM.git
 
-# Navigate to project directory
+# Navigate into the project directory
 cd INVENTORY-MANAGEMENT-SYSTEM
 Step 2: Create Virtual Environment
-A virtual environment isolates project dependencies from your system Python.
-
-
+bash
 # Create virtual environment
 python3 -m venv venv
 
@@ -121,8 +138,6 @@ source venv/bin/activate
 
 # On Windows:
 venv\Scripts\activate
-
-# You should see (venv) in your terminal prompt
 Step 3: Install Dependencies
 bash
 # Install all required packages
@@ -151,7 +166,8 @@ flask-marshmallow==1.0.0
 Step 4: Configure Environment Variables
 Create a .env file in the root directory:
 
-
+bash
+cat > .env << 'EOF'
 FLASK_APP=run.py
 FLASK_ENV=development
 SECRET_KEY=your-secret-key-here-change-in-production
@@ -160,7 +176,7 @@ DATABASE_URL=sqlite:///database.db
 EOF
 For production, generate secure random keys:
 
-
+bash
 python3 -c "import secrets; print(secrets.token_hex(32))"
 Step 5: Initialize the Database
 bash
@@ -179,12 +195,11 @@ Creates sample suppliers
 Adds sample products
 
 Step 6: Verify Database Creation
-
+bash
 # Check if database file was created
 ls -la instance/
 
-# Should see database.db file
-# View database schema
+# View database tables
 sqlite3 instance/database.db ".tables"
 Running the Application
 The application requires two servers: backend (Flask API) and frontend (static file server).
@@ -205,20 +220,10 @@ text
  * Serving Flask app 'run'
  * Debug mode: on
  * Running on http://127.0.0.1:5000
-The backend runs on port 5000 and handles:
-
-API requests
-
-Database operations
-
-Authentication
-
-Business logic
-
 Terminal 2 - Frontend Server
 Open a new terminal window:
 
-
+bash
 # Navigate to frontend directory
 cd ~/INVENTORY-MANAGEMENT-SYSTEM/frontend
 
@@ -228,14 +233,6 @@ Expected output:
 
 text
 Serving HTTP on 0.0.0.0 port 8000 ...
-The frontend runs on port 8000 and serves:
-
-HTML pages
-
-CSS stylesheets
-
-JavaScript files
-
 Access the Application
 Open your web browser and navigate to:
 
@@ -244,8 +241,8 @@ http://localhost:8000
 Default Login Credentials
 Role	Email	Password
 Admin	admin@kanban.com	admin123
-Manager	Create via signup with manager role	-
-User	Create via signup with user role	-
+Manager	Create via signup	User defined
+User	Create via signup	User defined
 API Documentation
 Base URL
 text
@@ -299,45 +296,11 @@ json
         "role": "admin"
     }
 }
-Refresh Token
-http
-POST /auth/refresh
-Authorization: Bearer <refresh_token>
-Response (200 OK):
-
-json
-{
-    "access_token": "eyJhbGciOiJIUzI1NiIs..."
-}
-Get Current User
-http
-GET /auth/me
-Authorization: Bearer <access_token>
-Response (200 OK):
-
-json
-{
-    "user": {
-        "id": 1,
-        "name": "Admin User",
-        "email": "admin@kanban.com",
-        "role": "admin"
-    }
-}
 Product Endpoints
 Get All Products (with pagination)
 http
 GET /products?page=1&per_page=10&search=excel&category_id=1&low_stock=true
 Authorization: Bearer <access_token>
-Query Parameters:
-
-Parameter	Type	Description
-page	integer	Page number (default: 1)
-per_page	integer	Items per page (default: 10)
-search	string	Search by name or SKU
-category_id	integer	Filter by category
-supplier_id	integer	Filter by supplier
-low_stock	boolean	Show only low stock items
 Response (200 OK):
 
 json
@@ -360,81 +323,6 @@ json
         "has_next": true,
         "has_prev": false
     }
-}
-Get Single Product
-http
-GET /products/{id}
-Authorization: Bearer <access_token>
-Response (200 OK):
-
-json
-{
-    "product": {
-        "id": 1,
-        "name": "Surf Excel",
-        "sku": "SURF001",
-        "quantity": 150,
-        "price": 45.00,
-        "cost": 38.00,
-        "reorder_level": 10,
-        "category_name": "Groceries",
-        "supplier_name": "Global Foods Ltd."
-    }
-}
-Create Product
-http
-POST /products
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-    "name": "New Product",
-    "sku": "NEW001",
-    "description": "Product description",
-    "quantity": 100,
-    "price": 29.99,
-    "cost": 20.00,
-    "reorder_level": 10,
-    "category_id": 1,
-    "supplier_id": 1
-}
-Response (201 Created):
-
-json
-{
-    "message": "Product created successfully",
-    "product": {
-        "id": 10,
-        "name": "New Product",
-        "sku": "NEW001"
-    }
-}
-Update Product
-http
-PUT /products/{id}
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-    "price": 35.99,
-    "quantity": 150
-}
-Response (200 OK):
-
-json
-{
-    "message": "Product updated successfully",
-    "product": { ... }
-}
-Delete Product
-http
-DELETE /products/{id}
-Authorization: Bearer <access_token>
-Response (200 OK):
-
-json
-{
-    "message": "Product deleted successfully"
 }
 Stock Transaction Endpoints
 Add Stock (Stock In)
@@ -479,8 +367,7 @@ Content-Type: application/json
 }
 Response (201 Created):
 
-`json`
-```
+json
 {
     "message": "Stock removed successfully",
     "transaction": {
@@ -493,26 +380,6 @@ Response (201 Created):
         "id": 1,
         "quantity": 190
     }
-}
-```
-Get Transaction History
-http
-GET /transactions?type=out&product_id=1
-Authorization: Bearer <access_token>
-Response (200 OK):
-
-json
-{
-    "transactions": [
-        {
-            "id": 16,
-            "transaction_type": "out",
-            "quantity": 10,
-            "product_name": "Surf Excel",
-            "user_name": "Admin User",
-            "created_at": "2024-01-15T10:30:00"
-        }
-    ]
 }
 Dashboard Statistics
 http
@@ -539,81 +406,7 @@ json
     "total_products": 45,
     "low_stock_products": 3
 }
-Category Endpoints
-Get All Categories
-http
-GET /categories
-Authorization: Bearer <access_token>
-Response (200 OK):
-
-json
-{
-    "categories": [
-        {
-            "id": 1,
-            "name": "Electronics",
-            "description": "Electronic devices",
-            "product_count": 15
-        }
-    ]
-}
-Create Category
-http
-POST /categories
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-    "name": "Office Supplies",
-    "description": "Stationery and office equipment"
-}
-Supplier Endpoints
-Get All Suppliers
-http
-GET /suppliers
-Authorization: Bearer <access_token>
-Response (200 OK):
-
-json
-{
-    "suppliers": [
-        {
-            "id": 1,
-            "name": "Tech Distributors Inc.",
-            "contact_person": "John Smith",
-            "email": "john@techdist.com",
-            "phone": "+1234567890",
-            "product_count": 8
-        }
-    ]
-}
-Create Supplier
-http
-POST /suppliers
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-    "name": "New Supplier",
-    "contact_person": "Jane Doe",
-    "email": "jane@supplier.com",
-    "phone": "+1234567890",
-    "address": "123 Business St"
-}
-Report Endpoints
-Sales Report
-http
-GET /reports/sales?period=month
-Authorization: Bearer <access_token>
-Inventory Report
-http
-GET /reports/inventory
-Authorization: Bearer <access_token>
-Transaction Report
-http
-GET /reports/transactions?type=out
-Authorization: Bearer <access_token>
-Status Codes
+HTTP Status Codes
 Code	Meaning	Description
 200	OK	Request successful
 201	Created	Resource created successfully
@@ -621,7 +414,7 @@ Code	Meaning	Description
 401	Unauthorized	Missing or invalid token
 403	Forbidden	Insufficient permissions
 404	Not Found	Resource does not exist
-409	Conflict	Duplicate entry (e.g., duplicate SKU)
+409	Conflict	Duplicate entry
 500	Internal Error	Server error
 Database Schema
 Tables Structure
@@ -636,25 +429,6 @@ CREATE TABLE users (
     is_active BOOLEAN DEFAULT 1,
     created_at DATETIME,
     updated_at DATETIME
-);
-
--- Categories table
-CREATE TABLE categories (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL,
-    description VARCHAR(200),
-    created_at DATETIME
-);
-
--- Suppliers table
-CREATE TABLE suppliers (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    contact_person VARCHAR(100),
-    email VARCHAR(120),
-    phone VARCHAR(20),
-    address VARCHAR(200),
-    created_at DATETIME
 );
 
 -- Products table
@@ -689,57 +463,31 @@ text
 INVENTORY-MANAGEMENT-SYSTEM/
 │
 ├── app/                           # Backend application
-│   ├── __init__.py               # App factory and configuration
-│   ├── config.py                 # Configuration settings
-│   │
+│   ├── __init__.py               # App factory
+│   ├── config.py                 # Configuration
 │   ├── models/                   # Database models
-│   │   ├── __init__.py
-│   │   ├── user.py              # User model
-│   │   ├── product.py           # Product model
-│   │   ├── category.py          # Category model
-│   │   ├── supplier.py          # Supplier model
-│   │   └── transaction.py       # Transaction model
-│   │
-│   ├── routes/                   # API routes
-│   │   ├── __init__.py
-│   │   ├── auth.py              # Authentication endpoints
-│   │   ├── products.py          # Product endpoints
-│   │   ├── categories.py        # Category endpoints
-│   │   ├── suppliers.py         # Supplier endpoints
-│   │   ├── transactions.py      # Transaction endpoints
-│   │   └── reports.py           # Report endpoints
-│   │
 │   ├── controllers/              # Business logic
-│   │   ├── __init__.py
-│   │   ├── auth_controller.py
-│   │   ├── product_controller.py
-│   │   └── ...
-│   │
-│   └── utils/                    # Utility functions
-│       ├── __init__.py
-│       └── decorators.py        # Role-based decorators
+│   ├── routes/                   # API endpoints
+│   └── utils/                    # Helper functions
 │
 ├── frontend/                     # Frontend application
-│   ├── index.html               # Main HTML file
-│   ├── css/
-│   │   └── style.css            # Stylesheets
-│   └── js/
-│       ├── app.js               # Main application logic
-│       ├── dashboard.js         # Dashboard functions
-│       ├── inventory.js         # Inventory management
-│       ├── reports.js           # Reports functionality
-│       ├── orders.js            # Orders management
-│       ├── user_management.js   # User management
-│       ├── supplier_management.js # Supplier management
-│       ├── notifications.js     # Notification system
-│       ├── darkmode.js          # Dark/light mode toggle
-│       └── session_timeout.js   # Session timeout handler
+│   ├── index.html               # Main HTML
+│   ├── css/                     # Stylesheets
+│   └── js/                      # JavaScript files
 │
-├── instance/                     # Instance folder
-│   └── database.db              # SQLite database file
+├── instance/                     # Database folder
+│   └── database.db              # SQLite database
+│
+├── screenshots/                  # Documentation images
+│   ├── login.png
+│   ├── dashboard.png
+│   ├── inventory.png
+│   ├── reports.png
+│   ├── users.png
+│   └── darkmode.png
 │
 ├── requirements.txt              # Python dependencies
-├── run.py                       # Application entry point
+├── run.py                       # Entry point
 ├── .env                         # Environment variables
 └── README.md                    # Documentation
 Troubleshooting
@@ -749,224 +497,73 @@ text
 ModuleNotFoundError: No module named 'flask'
 Solution:
 
-
-# Activate virtual environment
+bash
 source venv/bin/activate
-
-# Reinstall dependencies
 pip install -r requirements.txt
 Issue: Database not found
 text
-sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table
+sqlalchemy.exc.OperationalError: no such table
 Solution:
 
 bash
-# Initialize database
 flask init-db
 Issue: Port already in use
 text
 OSError: [Errno 98] Address already in use
 Solution:
 
-
-# Find process using port 5000
+bash
 lsof -i :5000
-
-# Kill the process
 kill -9 <PID>
-
-# Or use different port
-python run.py --port=5001
-Issue: CORS error in browser
-text
-Access to fetch at 'http://localhost:5000/api/...' from origin 'http://localhost:8000' has been blocked by CORS policy
-Solution:
-Ensure CORS is enabled in app/__init__.py:
-
-python
-CORS(app, origins=["http://localhost:8000"])
-Issue: Token expired
-text
-{"msg": "Token has expired"}
-Solution:
-Use refresh token endpoint to get new access token:
-
-http
-POST /auth/refresh
-Authorization: Bearer <refresh_token>
-Issue: Virtual environment not activating
-bash
-# On Linux/macOS
-source venv/bin/activate
-
-# On Windows
-venv\Scripts\activate
-
-# If permission denied
-chmod +x venv/bin/activate
-Development Guide
-Adding a New Feature
-Create a new branch:
-
-
-git checkout -b feature/your-feature-name
-Add database model if needed:
-
-python
-# app/models/new_model.py
-class NewModel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    # add fields
-Create controller:
-
-python
-# app/controllers/new_controller.py
-class NewController:
-    @staticmethod
-    def get_data():
-        # business logic
-        pass
-Create routes:
-
-python
-# app/routes/new_routes.py
-@bp.route('/data', methods=['GET'])
-@jwt_required()
-def get_data():
-    return jsonify(NewController.get_data())
-Update frontend to consume new API
-
-Running Tests
-
-# Run all tests
-python -m pytest tests/
-
-# Run specific test
-python -m pytest tests/test_products.py
-Database Migrations
-For production, use Alembic for migrations:
-
-
-# Install Alembic
-pip install alembic
-
-# Initialize
-alembic init migrations
-
-# Create migration
-alembic revision --autogenerate -m "description"
-
-# Apply migration
-alembic upgrade head
 Deployment
-Deploying to Production Server
-Option 1: Using Gunicorn (Linux/macOS)
+Using Gunicorn (Linux/macOS)
 bash
-# Install Gunicorn
 pip install gunicorn
-
-# Run with Gunicorn
 gunicorn -w 4 -b 0.0.0.0:5000 run:app
-Option 2: Using Waitress (Windows)
-bash
-# Install Waitress
-pip install waitress
-
-# Run with Waitress
-waitress-serve --port=5000 run:app
-Option 3: Docker Deployment
+Using Docker
 dockerfile
-# Dockerfile
 FROM python:3.9-slim
-
 WORKDIR /app
-
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-
 COPY . .
-
 EXPOSE 5000
-
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "run:app"]
 bash
-# Build Docker image
 docker build -t inventory-system .
-
-# Run container
 docker run -p 5000:5000 inventory-system
-Environment Variables for Production
-bash
-# .env file for production
-FLASK_ENV=production
-SECRET_KEY=<generate-secure-key>
-JWT_SECRET_KEY=<generate-secure-key>
-DATABASE_URL=postgresql://user:password@localhost/dbname
-Using PostgreSQL in Production
-bash
-# Install PostgreSQL driver
-pip install psycopg2-binary
-
-# Update DATABASE_URL in .env
-DATABASE_URL=postgresql://username:password@localhost/database_name
-Frontend Deployment
-Deploy to Netlify
-Push frontend folder to GitHub
-
-Connect repository to Netlify
-
-Set publish directory to frontend
-
-Deploy to Vercel
-bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-cd frontend
-vercel --prod
-Security Best Practices
-Never commit .env file - Add to .gitignore
-
-Use strong secrets - Generate with secrets.token_hex(32)
-
-Enable HTTPS in production - Use Let's Encrypt
-
-Rate limiting - Add to prevent abuse
-
-Input validation - Validate all user inputs
-
-SQL injection protection - Use parameterized queries (SQLAlchemy does this)
-
-XSS protection - Escape HTML output
-
-Regular backups - Backup database daily
-
-Support
-For issues or questions:
-
-Check the troubleshooting section
-
-Review API documentation
-
-Examine server logs in terminal
-
 License
-MIT License - See LICENSE file for details
+MIT License
 
 Author
 Calton Momaya
+
+GitHub: @CaltonMomaya
+
 Moringa School Student
 
 Acknowledgments
-Flask documentation
+Flask documentation and community
 
-SQLAlchemy ORM
-
-JWT extended library
+SQLAlchemy ORM team
 
 Chart.js for visualizations
 
+Font Awesome for icons
 
+Moringa School for guidance
 
+Built with passion for inventory management
+EOF
 
+echo "README.md has been completely rewritten with proper formatting!"
+
+text
+
+Now push the updated README to GitHub:
+
+```bash
+cd ~/INVENTORY-MANAGEMENT-SYSTEM
+git add README.md
+git commit -m "Fix README formatting with proper code blocks"
+git push origin main
