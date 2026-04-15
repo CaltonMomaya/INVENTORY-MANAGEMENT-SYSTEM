@@ -1,4 +1,4 @@
-cat > README.md << 'EOF'
+
 # INVENTORY MANAGEMENT SYSTEM - KANBAN
 
 A comprehensive, production-ready inventory management system with Flask REST API backend and modern web frontend. This system provides complete inventory control with user authentication, role-based access control, real-time stock tracking, and detailed analytics.
@@ -558,12 +558,3 @@ EOF
 
 echo "README.md has been completely rewritten with proper formatting!"
 
-text
-
-Now push the updated README to GitHub:
-
-```bash
-cd ~/INVENTORY-MANAGEMENT-SYSTEM
-git add README.md
-git commit -m "Fix README formatting with proper code blocks"
-git push origin main
