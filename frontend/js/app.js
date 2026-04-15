@@ -995,3 +995,102 @@ window.handleLogout = function(e) {
         window.location.href = '/';
     }
 };
+
+// Store user email on login for profile display
+const originalHandleLogin = window.handleLogin;
+if (typeof originalHandleLogin === 'function') {
+    window.handleLogin = async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                localStorage.setItem('token', data.access_token);
+                localStorage.setItem('userRole', data.user.role);
+                localStorage.setItem('userName', data.user.name);
+                localStorage.setItem('userEmail', data.user.email);
+                showSnackbar(`Welcome back, ${data.user.name}!`, 'success');
+                window.location.reload();
+            } else {
+                showSnackbar(data.error || 'Login failed', 'error');
+            }
+        } catch (error) {
+            showSnackbar('Connection error. Make sure backend is running.', 'error');
+        }
+    };
+}
+
+const originalHandleSignup = window.handleSignup;
+if (typeof originalHandleSignup === 'function') {
+    window.handleSignup = async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('signup-name').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const role = document.getElementById('signup-role')?.value || 'user';
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, role })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                showSnackbar('Account created successfully! Please login.', 'success');
+                document.getElementById('signup-form').classList.remove('active');
+                document.getElementById('login-form').classList.add('active');
+                document.getElementById('login-email').value = email;
+            } else {
+                showSnackbar(data.error || 'Registration failed', 'error');
+            }
+        } catch (error) {
+            showSnackbar('Connection error', 'error');
+        }
+    };
+}
+
+// Store user ID on login for profile picture (without redeclaring)
+if (typeof window.handleLogin === 'function') {
+    const originalLoginHandler = window.handleLogin;
+    window.handleLogin = async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                localStorage.setItem('token', data.access_token);
+                localStorage.setItem('userRole', data.user.role);
+                localStorage.setItem('userName', data.user.name);
+                localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('userId', data.user.id);
+                showSnackbar(`Welcome back, ${data.user.name}!`, 'success');
+                window.location.reload();
+            } else {
+                showSnackbar(data.error || 'Login failed', 'error');
+            }
+        } catch (error) {
+            showSnackbar('Connection error. Make sure backend is running.', 'error');
+        }
+    };
+}

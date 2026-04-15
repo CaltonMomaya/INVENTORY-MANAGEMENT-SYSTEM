@@ -394,3 +394,45 @@ if (document.getElementById('users-page')) {
         initUsersPage();
     }
 }
+
+// Override confirm in user management
+window.toggleUserStatus = async function(userId, currentStatus) {
+    const action = currentStatus ? 'deactivate' : 'activate';
+    window.customConfirm(`Are you sure you want to ${action} this user?`, async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`http://localhost:5000/api/auth/users/${userId}/toggle`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                showSnackbar(`User ${action}d successfully!`, 'success');
+                loadUsers();
+            } else {
+                showSnackbar('Failed to update user status', 'error');
+            }
+        } catch (error) {
+            showSnackbar('Connection error', 'error');
+        }
+    });
+};
+
+window.deleteUser = async function(userId, userName) {
+    window.customConfirm(`Are you sure you want to permanently delete user "${userName}"? This action cannot be undone!`, async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`http://localhost:5000/api/auth/users/${userId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                showSnackbar('User deleted successfully!', 'success');
+                loadUsers();
+            } else {
+                showSnackbar('Failed to delete user', 'error');
+            }
+        } catch (error) {
+            showSnackbar('Connection error', 'error');
+        }
+    });
+};

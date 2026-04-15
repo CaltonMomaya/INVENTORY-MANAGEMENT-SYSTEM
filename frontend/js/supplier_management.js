@@ -440,3 +440,28 @@ if (document.getElementById('suppliers-page')) {
         initSuppliersPage();
     }
 }
+
+// Override confirm in supplier management
+window.deleteSupplier = async function(supplierId) {
+    const supplier = suppliersList.find(s => s.id === supplierId);
+    window.customConfirm(`Are you sure you want to delete supplier "${supplier.name}"? This will also delete all products associated with this supplier.`, async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`http://localhost:5000/api/suppliers/${supplierId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                showSnackbar('Supplier deleted successfully!', 'success');
+                loadSuppliers();
+                if (typeof addNotification === 'function') {
+                    addNotification(`Supplier "${supplier.name}" deleted`, 'supplier');
+                }
+            } else {
+                showSnackbar('Failed to delete supplier', 'error');
+            }
+        } catch (error) {
+            showSnackbar('Connection error', 'error');
+        }
+    });
+};

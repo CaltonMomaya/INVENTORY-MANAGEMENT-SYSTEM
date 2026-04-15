@@ -1,4 +1,4 @@
-cat > README.md << 'EOF'
+
 # INVENTORY MANAGEMENT SYSTEM - KANBAN
 
 A comprehensive, production-ready inventory management system with Flask REST API backend and modern web frontend. This system provides complete inventory control with user authentication, role-based access control, real-time stock tracking, and detailed analytics.
@@ -479,7 +479,8 @@ Content-Type: application/json
 }
 Response (201 Created):
 
-json
+`json`
+```
 {
     "message": "Stock removed successfully",
     "transaction": {
@@ -493,6 +494,7 @@ json
         "quantity": 190
     }
 }
+```
 Get Transaction History
 http
 GET /transactions?type=out&product_id=1

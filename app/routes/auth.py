@@ -154,3 +154,48 @@ def delete_user(user_id):
     db.session.commit()
     
     return jsonify({'message': 'User deleted successfully'}), 200
+
+# Google OAuth endpoint
+@bp.route('/google', methods=['POST'])
+def google_auth():
+    """Authenticate user with Google"""
+    data = request.get_json()
+    email = data.get('email')
+    name = data.get('name')
+    google_id = data.get('google_id')
+    picture = data.get('picture')
+    
+    if not email:
+        return jsonify({'error': 'Email required'}), 400
+    
+    # Check if user exists
+    user = User.query.filter_by(email=email).first()
+    
+    if not user:
+        # Create new user
+        hashed_password = bcrypt.generate_password_hash(google_id).decode('utf-8')
+        user = User(
+            name=name,
+            email=email,
+            password_hash=hashed_password,
+            role='user',
+            is_active=True
+        )
+        db.session.add(user)
+        db.session.commit()
+        
+        # Store profile picture if provided
+        if picture:
+            # In production, you would download and store the picture
+            pass
+    
+    # Generate tokens
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
+    
+    return jsonify({
+        'message': 'Google sign-in successful',
+        'access_token': access_token,
+        'refresh_token': refresh_token,
+        'user': user.to_dict()
+    }), 200

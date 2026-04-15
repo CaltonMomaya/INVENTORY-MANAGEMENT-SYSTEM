@@ -1,0 +1,309 @@
+/* Complete Dark Mode Fix - All backgrounds uniform */
+body.dark-mode {
+    background-color: #0a0a0a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Sidebar and main containers */
+body.dark-mode .sidebar,
+body.dark-mode .top-navbar,
+body.dark-mode .main-content,
+body.dark-mode .dashboard-container {
+    background-color: #0a0a0a !important;
+}
+
+body.dark-mode .stat-card,
+body.dark-mode .section-card,
+body.dark-mode .quick-stat-card,
+body.dark-mode .filter-bar,
+body.dark-mode .table-container,
+body.dark-mode .auth-card,
+body.dark-mode .auth-right,
+body.dark-mode .settings-card,
+body.dark-mode .card {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+    border-color: #333333 !important;
+}
+
+/* Table backgrounds - CRITICAL FIX for orders table */
+body.dark-mode table,
+body.dark-mode table tbody,
+body.dark-mode table tr,
+body.dark-mode .data-table,
+body.dark-mode .data-table tbody,
+body.dark-mode .data-table tr {
+    background-color: #1a1a1a !important;
+}
+
+body.dark-mode table th,
+body.dark-mode .data-table th {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border-bottom-color: #444444 !important;
+}
+
+body.dark-mode table td,
+body.dark-mode .data-table td {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+    border-bottom-color: #333333 !important;
+}
+
+/* Auth page dark mode */
+body.dark-mode .auth-left {
+    background: linear-gradient(135deg, #0a0a2e 0%, #0a0a1a 100%) !important;
+}
+
+body.dark-mode .auth-card {
+    background-color: #1a1a1a !important;
+}
+
+/* Stat cards */
+body.dark-mode .stat-card .stat-value,
+body.dark-mode .quick-stat-card .large-number {
+    color: #4fc3f7 !important;
+}
+
+body.dark-mode .stat-card h3,
+body.dark-mode .quick-stat-card h4,
+body.dark-mode .section-card h3 {
+    color: #aaaaaa !important;
+}
+
+/* Form inputs */
+body.dark-mode .filter-input,
+body.dark-mode .filter-select,
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border-color: #444444 !important;
+}
+
+body.dark-mode .filter-input:focus,
+body.dark-mode .filter-select:focus {
+    border-color: #2f6fed !important;
+    outline: none !important;
+}
+
+/* Search bar */
+body.dark-mode .search-bar {
+    background-color: #2a2a2a !important;
+}
+
+body.dark-mode .search-bar input {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .search-bar i {
+    color: #888888 !important;
+}
+
+/* Navigation */
+body.dark-mode .nav-item {
+    color: #aaaaaa !important;
+}
+
+body.dark-mode .nav-item:hover {
+    background-color: #2a2a2a !important;
+    color: #4fc3f7 !important;
+}
+
+body.dark-mode .nav-item.active {
+    background-color: #1a3a5c !important;
+    color: #4fc3f7 !important;
+}
+
+/* Buttons */
+body.dark-mode .btn-primary {
+    background-color: #2f6fed !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: #1e4fbd !important;
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #444444 !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #555555 !important;
+}
+
+/* Theme Toggle Button - MAKE IT VISIBLE */
+body.dark-mode .theme-toggle {
+    background-color: #2a2a2a !important;
+    color: #ffd700 !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+body.dark-mode .theme-toggle i {
+    color: #ffd700 !important;
+    font-size: 18px !important;
+}
+
+body.dark-mode .theme-toggle:hover {
+    background-color: #3a3a3a !important;
+    transform: scale(1.05);
+}
+
+/* Light mode theme toggle */
+.theme-toggle {
+    background-color: #f0f0f0 !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle i {
+    color: #2f6fed !important;
+    font-size: 18px !important;
+}
+
+.theme-toggle:hover {
+    background-color: #e0e0e0 !important;
+    transform: scale(1.05);
+}
+
+/* Alerts and badges */
+body.dark-mode .alert-item.warning {
+    background-color: #332200 !important;
+    color: #ffb74d !important;
+}
+
+body.dark-mode .alert-item.success {
+    background-color: #0a2e1a !important;
+    color: #81c784 !important;
+}
+
+body.dark-mode .status-low {
+    background-color: #332200 !important;
+    color: #ff6b6b !important;
+}
+
+body.dark-mode .status-normal {
+    background-color: #0a2e1a !important;
+    color: #81c784 !important;
+}
+
+/* Modals */
+body.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .modal-header {
+    border-bottom-color: #333333 !important;
+}
+
+body.dark-mode .close {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .close:hover {
+    color: #ff6b6b !important;
+}
+
+/* Pagination */
+body.dark-mode .pagination button {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border-color: #444444 !important;
+}
+
+body.dark-mode .pagination button:hover {
+    background-color: #3a3a3a !important;
+}
+
+body.dark-mode .pagination button.active {
+    background-color: #2f6fed !important;
+    color: white !important;
+}
+
+/* Role badges */
+body.dark-mode .role-badge.role-admin {
+    background-color: #332222 !important;
+    color: #ff6b6b !important;
+}
+
+body.dark-mode .role-badge.role-manager {
+    background-color: #332a00 !important;
+    color: #ffb74d !important;
+}
+
+body.dark-mode .role-badge.role-user {
+    background-color: #0a2e1a !important;
+    color: #81c784 !important;
+}
+
+/* Scrollbar for dark mode */
+body.dark-mode ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #2a2a2a;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: #555555;
+    border-radius: 5px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #777777;
+}
+
+/* Ensure ALL table rows have dark background */
+body.dark-mode table tr,
+body.dark-mode .data-table tr,
+body.dark-mode #orders-list table tr,
+body.dark-mode #inventory-body tr,
+body.dark-mode #users-list table tr,
+body.dark-mode #suppliers-list table tr {
+    background-color: #1a1a1a !important;
+}
+
+body.dark-mode table tr:hover,
+body.dark-mode .data-table tr:hover {
+    background-color: #252525 !important;
+}
+
+/* Fix for orders page specifically */
+body.dark-mode .section-card .table-container,
+body.dark-mode .section-card .table-container table,
+body.dark-mode .section-card .table-container tbody,
+body.dark-mode .section-card .table-container tr,
+body.dark-mode .section-card .table-container td {
+    background-color: #1a1a1a !important;
+}
+
+/* Stats cards in dark mode */
+body.dark-mode .stats-row .stat-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%) !important;
+}
+
+/* Fix for any remaining white backgrounds */
+body.dark-mode div:not(.no-dark-mode) {
+    background-color: inherit;
+}
